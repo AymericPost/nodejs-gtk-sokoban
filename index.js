@@ -32,8 +32,6 @@ rightButton.on("clicked", onRight);
 downButton.on("clicked", onDown);
 restartButton.on("clicked", onRestart);
 
-// upButton.on("key_pressed_event", (e) => console.log(e))
-
 controlsGrid.attach(upButton, 1, 0, 1, 1);
 controlsGrid.attach(leftButton, 0, 1, 1, 1);
 controlsGrid.attach(rightButton, 2, 1, 1, 1);
