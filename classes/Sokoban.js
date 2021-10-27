@@ -3,20 +3,30 @@ const win = require("../utils/Window")
 
 module.exports = class Sokoban {
 
-    constructor() {
+    constructor(rawLayout) {
         this.gridBox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
         this.grid = new Gtk.Grid({});
 
-        this.layout = [
-            [" ", "W", "W", "W"],
-            [" ","W", "C", "W"],
-            [" ","W", " ", "W"],
-            [" ","W", "B", "W"],
-            [" ","W", " ", "W"],
-            [" ","W", " ", "W"],
-            [" ","W", "X", "W"],
-            [" ","W", "W", "W"],
-        ];
+        this.layout;
+
+        rawLayout && this.parseLayout(rawLayout);
+
+    }
+
+    parseLayout(rawLayout) {
+        this.layout = [[]]
+        let y = 0;
+
+        for(let i = 0 ; i < rawLayout.length ; i++) {
+
+            if(rawLayout[i] === "\n") {
+                y++;
+                this.layout.push([]);
+            } else {
+                this.layout[y].push(rawLayout[i].toUpperCase());
+            }
+
+        }
 
     }
 
