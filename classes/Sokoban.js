@@ -8,9 +8,12 @@ module.exports = class Sokoban {
         this.grid = new Gtk.Grid({});
 
         this.layout;
+        this.charCoords = [0, 0];
 
-        rawLayout && this.parseLayout(rawLayout);
-
+        if(rawLayout) {
+            this.rawLayout = rawLayout;
+            this.parseLayout(rawLayout);
+        }
     }
 
     parseLayout(rawLayout) {
@@ -40,6 +43,7 @@ module.exports = class Sokoban {
                         break;
                     case "C":
                         this.grid.attach((new Gtk.Image({file: "./sprites/worker.png"})), x, y, 1, 1);
+                        this.charCoords = [x, y];
                         break;
                     case "B":
                         this.grid.attach((new Gtk.Image({file: "./sprites/box.png"})), x, y, 1, 1);
