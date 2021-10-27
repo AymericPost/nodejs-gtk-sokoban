@@ -32,6 +32,8 @@ rightButton.on("clicked", onRight);
 downButton.on("clicked", onDown);
 restartButton.on("clicked", onRestart);
 
+// upButton.on("key_pressed_event", (e) => console.log(e))
+
 controlsGrid.attach(upButton, 1, 0, 1, 1);
 controlsGrid.attach(leftButton, 0, 1, 1, 1);
 controlsGrid.attach(rightButton, 2, 1, 1, 1);
@@ -52,51 +54,19 @@ win.showAll();
 Gtk.main();
 
 function onUp() {
-    const charX = soko.charCoords[0];
-    const charY = soko.charCoords[1];
-    soko.charCoords[1]--;
-
-    soko.layout[charY][charX] = " ";
-    soko.layout[charY - 1][charX] = "C";
-
-    soko.clear();
-    soko.render();
+    soko.moveUp();
 }
 
 function onDown() {
-    const charX = soko.charCoords[0];
-    const charY = soko.charCoords[1];
-    soko.charCoords[1]++;
-
-    soko.layout[charY][charX] = " ";
-    soko.layout[charY + 1][charX] = "C";
-
-    soko.clear();
-    soko.render();
+    soko.moveDown();
 }
 
 function onLeft() {
-    const charX = soko.charCoords[0];
-    const charY = soko.charCoords[1];
-    soko.charCoords[0]--;
-
-    soko.layout[charY][charX] = " ";
-    soko.layout[charY][charX - 1] = "C";
-
-    soko.clear();
-    soko.render();
+    soko.moveLeft();
 }
 
 function onRight() {
-    const charX = soko.charCoords[0];
-    const charY = soko.charCoords[1];
-    soko.charCoords[0]++;
-
-    soko.layout[charY][charX] = " ";
-    soko.layout[charY][charX + 1] = "C";
-
-    soko.clear();
-    soko.render();
+    soko.moveRight();
 }
 
 function onRestart() {
