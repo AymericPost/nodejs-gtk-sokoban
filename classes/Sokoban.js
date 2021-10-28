@@ -1,5 +1,5 @@
 const Gtk = require("../utils/Gtk");
-const win = require("../utils/Window")
+const win = require("../utils/Window");
 
 module.exports = class Sokoban {
 
@@ -9,7 +9,9 @@ module.exports = class Sokoban {
 
         this.layout;
         this.charCoords = [0, 0];
-        this.targetCoords = []
+        this.targetCoords = [];
+        this.steps = 0;
+        this.currentSteps = 0;
 
         if (rawLayout) {
             this.rawLayout = rawLayout;
@@ -19,9 +21,11 @@ module.exports = class Sokoban {
 
     parseLayout(rawLayout) {
         this.rawLayout = rawLayout;
-        this.layout = [[]]
-        this.charCoords = [0, 0]
+        this.layout = [[]];
+        this.charCoords = [0, 0];
         this.targetCoords = [];
+        this.currentSteps = 0;
+
         let y = 0;
 
         for (let i = 0; i < rawLayout.length; i++) {
@@ -37,7 +41,7 @@ module.exports = class Sokoban {
 
         for (let y = 0; y < this.layout.length; y++)
             for (let x = 0; x < this.layout[y].length; x++) {
-                this.layout[y][x] == "X" && this.targetCoords.push([x, y])
+                this.layout[y][x] == "X" && this.targetCoords.push([x, y]);
                 if (this.layout[y][x] == "C") this.charCoords = [x, y];
             };
 
@@ -82,6 +86,8 @@ module.exports = class Sokoban {
         const charY = this.charCoords[1];
 
         if (this.moveIsAllowed(charX, charY - 1, "UP")) {
+            this.steps++;
+            this.currentSteps++;
             this.charCoords[1]--;
 
             this.layout[charY][charX] = " ";
@@ -92,7 +98,7 @@ module.exports = class Sokoban {
         }
 
         return this.targetCoords.reduce((prev, curr) => {
-            return prev && this.layout[curr[1]][curr[0]] == "B"
+            return prev && this.layout[curr[1]][curr[0]] == "B";
         }, true)
     }
 
@@ -101,6 +107,8 @@ module.exports = class Sokoban {
         const charY = this.charCoords[1];
 
         if (this.moveIsAllowed(charX, charY + 1, "DOWN")) {
+            this.steps++;
+            this.currentSteps++;
             this.charCoords[1]++;
 
             this.layout[charY][charX] = " ";
@@ -111,7 +119,7 @@ module.exports = class Sokoban {
         }
 
         return this.targetCoords.reduce((prev, curr) => {
-            return prev && this.layout[curr[1]][curr[0]] == "B"
+            return prev && this.layout[curr[1]][curr[0]] == "B";
         }, true)
     }
 
@@ -120,6 +128,8 @@ module.exports = class Sokoban {
         const charY = this.charCoords[1];
 
         if (this.moveIsAllowed(charX - 1, charY, "LEFT")) {
+            this.steps++;
+            this.currentSteps++;
             this.charCoords[0]--;
 
             this.layout[charY][charX] = " ";
@@ -130,7 +140,7 @@ module.exports = class Sokoban {
         }
 
         return this.targetCoords.reduce((prev, curr) => {
-            return prev && this.layout[curr[1]][curr[0]] == "B"
+            return prev && this.layout[curr[1]][curr[0]] == "B";
         }, true)
     }
 
@@ -139,6 +149,8 @@ module.exports = class Sokoban {
         const charY = this.charCoords[1];
 
         if (this.moveIsAllowed(charX + 1, charY, "RIGHT")) {
+            this.steps++;
+            this.currentSteps++;
             this.charCoords[0]++;
 
             this.layout[charY][charX] = " ";
@@ -149,7 +161,7 @@ module.exports = class Sokoban {
         }
 
         return this.targetCoords.reduce((prev, curr) => {
-            return prev && this.layout[curr[1]][curr[0]] == "B"
+            return prev && this.layout[curr[1]][curr[0]] == "B";
         }, true)
     }
 
