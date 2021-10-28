@@ -81,10 +81,10 @@ function nextLevel() {
         soko.render();
         win.showAll();
     } else {
-        upButton.on("clicked", () => {});
-        leftButton.on("clicked", () => {});
-        rightButton.on("clicked", () => {});
-        downButton.on("clicked", () => {});
+        upButton.on("clicked", () => {Gtk.mainQuit()});
+        leftButton.on("clicked", () => {Gtk.mainQuit()});
+        rightButton.on("clicked", () => {Gtk.mainQuit()});
+        downButton.on("clicked", () => {Gtk.mainQuit()});
         gameLabel.label = "Congratulations!"
         restartButton.label = "Close";
         restartButton.on("clicked", () => {Gtk.mainQuit()});
