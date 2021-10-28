@@ -9,6 +9,7 @@ module.exports = class Sokoban {
 
         this.layout;
         this.charCoords = [0, 0];
+        this.targetCoords = []
 
         if (rawLayout) {
             this.rawLayout = rawLayout;
@@ -17,7 +18,10 @@ module.exports = class Sokoban {
     }
 
     parseLayout(rawLayout) {
+        this.rawLayout = rawLayout;
         this.layout = [[]]
+        this.charCoords = [0,0]
+        this.targetCoords = [];
         let y = 0;
 
         for (let i = 0; i < rawLayout.length; i++) {
@@ -30,6 +34,9 @@ module.exports = class Sokoban {
             }
 
         }
+
+        for (let y = 0; y < this.layout.length; y++) 
+            for (let x = 0; x < this.layout[y].length; x++) this.layout[y][x] == "X" && this.targetCoords.push([x, y]);
 
     }
 
@@ -81,6 +88,9 @@ module.exports = class Sokoban {
             this.render();
         }
 
+        return this.targetCoords.reduce((prev, curr) => {
+            return prev && this.layout[curr[1]][curr[0]] == "B"
+        }, true)
     }
 
     moveDown() {
@@ -97,6 +107,9 @@ module.exports = class Sokoban {
             this.render();
         }
 
+        return this.targetCoords.reduce((prev, curr) => {
+            return prev && this.layout[curr[1]][curr[0]] == "B"
+        }, true)
     }
 
     moveLeft() {
@@ -112,6 +125,10 @@ module.exports = class Sokoban {
             this.clear();
             this.render();
         }
+
+        return this.targetCoords.reduce((prev, curr) => {
+            return prev && this.layout[curr[1]][curr[0]] == "B"
+        }, true)
     }
 
     moveRight() {
@@ -127,6 +144,10 @@ module.exports = class Sokoban {
             this.clear();
             this.render();
         }
+
+        return this.targetCoords.reduce((prev, curr) => {
+            return prev && this.layout[curr[1]][curr[0]] == "B"
+        }, true)
     }
 
     moveIsAllowed(x, y, direction) {
@@ -140,7 +161,7 @@ module.exports = class Sokoban {
         switch (direction) {
             case "UP":
                 if (!["W", "B"].includes(this.layout[y - 1][x])) {
-                    this.layout[y][x] = " ";
+                    this.layout[y][x] = x == " ";
                     this.layout[y - 1][x] = "B";
                     return true;
                 }
