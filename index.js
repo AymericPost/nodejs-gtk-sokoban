@@ -2,22 +2,18 @@ const Gtk = require("./utils/Gtk");
 const win = require("./utils/Window");
 
 const Sokoban = require("./classes/Sokoban");
+const Campaign = require("./classes/Campaign");
 
 const mainBox = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL });
 const controlsBox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
 const controlsGrid = new Gtk.Grid({});
 
-const soko = new Sokoban(`
-    WWW
-    WCW
-    W W
-    WBW
-    W W
-    W W
-    WXW
-    WWW
-`);
+const gameLabel = new Gtk.Label();
+gameLabel.label = "Move boxes to target(s).";
 
+const levels = new Campaign("./levels")
+
+const soko = new Sokoban(levels.next());
 soko.render();
 
 const upButton = new Gtk.Button({ label: "↑" });
@@ -32,8 +28,6 @@ rightButton.on("clicked", onRight);
 downButton.on("clicked", onDown);
 restartButton.on("clicked", onRestart);
 
-// upButton.on("key_pressed_event", (e) => console.log(e))
-
 controlsGrid.attach(upButton, 1, 0, 1, 1);
 controlsGrid.attach(leftButton, 0, 1, 1, 1);
 controlsGrid.attach(rightButton, 2, 1, 1, 1);
@@ -45,6 +39,7 @@ controlsGrid.attach(restartButton, 0, 5, 3, 1);
 
 controlsBox.packStart(controlsGrid, true, false, 2);
 
+mainBox.packStart(gameLabel, true, false, 0)
 mainBox.packStart(soko.gridBox, true, false, 0);
 mainBox.packStart(controlsBox, true, false, 0);
 
@@ -54,19 +49,20 @@ win.showAll();
 Gtk.main();
 
 function onUp() {
-    soko.moveUp();
+    soko.moveUp() && nextLevel();
+
 }
 
 function onDown() {
-    soko.moveDown();
+    soko.moveDown() && nextLevel();
 }
 
 function onLeft() {
-    soko.moveLeft();
+    soko.moveLeft() && nextLevel();;
 }
 
 function onRight() {
-    soko.moveRight();
+    soko.moveRight() && nextLevel();
 }
 
 function onRestart() {
@@ -74,4 +70,24 @@ function onRestart() {
 
     soko.parseLayout(soko.rawLayout);
     soko.render();
+}
+
+function nextLevel() {
+    const nextLevel = levels.next();
+
+    if (nextLevel) {
+        soko.parseLayout(nextLevel);
+        soko.clear();
+        soko.render();
+        win.showAll();
+    } else {
+        upButton.on("clicked", () => {});
+        leftButton.on("clicked", () => {});
+        rightButton.on("clicked", () => {});
+        downButton.on("clicked", () => {});
+        gameLabel.label = "Congratulations!"
+        restartButton.label = "Close";
+        restartButton.on("clicked", () => {Gtk.mainQuit()});
+        win.showAll();
+    }
 }
