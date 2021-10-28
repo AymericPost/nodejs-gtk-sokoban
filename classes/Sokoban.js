@@ -1,5 +1,5 @@
 const Gtk = require("../utils/Gtk");
-const win = require("../utils/Window")
+const win = require("../utils/Window");
 
 module.exports = class Sokoban {
 
@@ -9,7 +9,7 @@ module.exports = class Sokoban {
 
         this.layout;
         this.charCoords = [0, 0];
-        this.targetCoords = []
+        this.targetCoords = [];
 
         if (rawLayout) {
             this.rawLayout = rawLayout;
@@ -19,8 +19,8 @@ module.exports = class Sokoban {
 
     parseLayout(rawLayout) {
         this.rawLayout = rawLayout;
-        this.layout = [[]]
-        this.charCoords = [0, 0]
+        this.layout = [[]];
+        this.charCoords = [0, 0];
         this.targetCoords = [];
         let y = 0;
 
@@ -37,7 +37,7 @@ module.exports = class Sokoban {
 
         for (let y = 0; y < this.layout.length; y++)
             for (let x = 0; x < this.layout[y].length; x++) {
-                this.layout[y][x] == "X" && this.targetCoords.push([x, y])
+                this.layout[y][x] == "X" && this.targetCoords.push([x, y]);
                 if (this.layout[y][x] == "C") this.charCoords = [x, y];
             };
 
@@ -92,7 +92,7 @@ module.exports = class Sokoban {
         }
 
         return this.targetCoords.reduce((prev, curr) => {
-            return prev && this.layout[curr[1]][curr[0]] == "B"
+            return prev && this.layout[curr[1]][curr[0]] == "B";
         }, true)
     }
 
@@ -111,7 +111,7 @@ module.exports = class Sokoban {
         }
 
         return this.targetCoords.reduce((prev, curr) => {
-            return prev && this.layout[curr[1]][curr[0]] == "B"
+            return prev && this.layout[curr[1]][curr[0]] == "B";
         }, true)
     }
 
@@ -130,7 +130,7 @@ module.exports = class Sokoban {
         }
 
         return this.targetCoords.reduce((prev, curr) => {
-            return prev && this.layout[curr[1]][curr[0]] == "B"
+            return prev && this.layout[curr[1]][curr[0]] == "B";
         }, true)
     }
 
@@ -149,7 +149,7 @@ module.exports = class Sokoban {
         }
 
         return this.targetCoords.reduce((prev, curr) => {
-            return prev && this.layout[curr[1]][curr[0]] == "B"
+            return prev && this.layout[curr[1]][curr[0]] == "B";
         }, true)
     }
 

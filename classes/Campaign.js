@@ -8,15 +8,15 @@ module.exports = class Campaign {
             this.dir = str + "/";
             this.files = fs.readdirSync(str).sort((a, b) => parseInt(a) - parseInt(b));
             this.rawLevels = [];
-            this.current = 0;
+            this.current = 5;
 
             for(let i = 0 ; i < this.files.length ; i++) 
-                this.rawLevels.push(fs.readFileSync(this.dir + this.files[i], {encoding: "utf8"}))
+                this.rawLevels.push(fs.readFileSync(this.dir + this.files[i], {encoding: "utf8"}));
 
         }
     }
 
     next() {
-        return this.rawLevels[this.current++] || null
+        return this.rawLevels[this.current++] || null;
     }
 }
