@@ -20,7 +20,7 @@ module.exports = class Sokoban {
     parseLayout(rawLayout) {
         this.rawLayout = rawLayout;
         this.layout = [[]]
-        this.charCoords = [0,0]
+        this.charCoords = [0, 0]
         this.targetCoords = [];
         let y = 0;
 
@@ -35,8 +35,11 @@ module.exports = class Sokoban {
 
         }
 
-        for (let y = 0; y < this.layout.length; y++) 
-            for (let x = 0; x < this.layout[y].length; x++) this.layout[y][x] == "X" && this.targetCoords.push([x, y]);
+        for (let y = 0; y < this.layout.length; y++)
+            for (let x = 0; x < this.layout[y].length; x++) {
+                this.layout[y][x] == "X" && this.targetCoords.push([x, y])
+                if (this.layout[y][x] == "C") this.charCoords = [x, y];
+            };
 
     }
 
@@ -50,13 +53,9 @@ module.exports = class Sokoban {
                         break;
                     case "C":
                         this.grid.attach((new Gtk.Image({ file: "./sprites/worker.png" })), x, y, 1, 1);
-                        this.charCoords = [x, y];
                         break;
                     case "B":
                         this.grid.attach((new Gtk.Image({ file: "./sprites/box.png" })), x, y, 1, 1);
-                        break;
-                    case "X":
-                        this.grid.attach((new Gtk.Image({ file: "./sprites/target.png" })), x, y, 1, 1);
                         break;
                     default:
                         break;
@@ -64,6 +63,10 @@ module.exports = class Sokoban {
                 }
             }
         }
+
+        for (let i = 0; i < this.targetCoords.length; i++)
+            if (!["B", "C"].includes(this.layout[this.targetCoords[i][1], this.targetCoords[i][0]]))
+                this.grid.attach((new Gtk.Image({ file: "./sprites/target.png" })), this.targetCoords[i][0], this.targetCoords[i][1], 1, 1);
 
         this.gridBox.packStart(this.grid, true, false, 2);
         win.showAll();
