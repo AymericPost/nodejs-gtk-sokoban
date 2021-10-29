@@ -1,6 +1,7 @@
 const Gtk = require("./utils/Gtk");
 const win = require("./utils/Window");
 
+const sfx = require("./utils/sfx")
 const Sokoban = require("./classes/Sokoban");
 const Campaign = require("./classes/Campaign");
 
@@ -53,13 +54,15 @@ win.showAll();
 Gtk.main();
 
 function onUp() {
-    soko.moveUp() && nextLevel();
+    soko.moveUp()
+    soko.isWon && nextLevel();
     stepLabel.label = "Steps: " + soko.steps;
 
 }
 
 function onDown() {
-    soko.moveDown() && nextLevel();
+    soko.moveDown()
+    soko.isWon && nextLevel();
     stepLabel.label = "Steps: " + soko.steps;
 }
 
@@ -69,11 +72,13 @@ function onLeft() {
 }
 
 function onRight() {
-    soko.moveRight() && nextLevel();
+    soko.moveRight();
+    soko.isWon && nextLevel();
     stepLabel.label = "Steps: " + soko.steps;
 }
 
 function onRestart() {
+    sfx.reset()
     soko.clear();
     soko.steps -= soko.currentSteps;
 

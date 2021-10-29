@@ -1,6 +1,8 @@
 const Gtk = require("../utils/Gtk");
 const win = require("../utils/Window");
 
+const sfx = require("../utils/sfx");
+
 module.exports = class Sokoban {
 
     constructor(rawLayout) {
@@ -12,6 +14,8 @@ module.exports = class Sokoban {
         this.targetCoords = [];
         this.steps = 0;
         this.currentSteps = 0;
+
+        this.boxReachedTarget = false;
 
         if (rawLayout) {
             this.rawLayout = rawLayout;
@@ -25,6 +29,7 @@ module.exports = class Sokoban {
         this.charCoords = [0, 0];
         this.targetCoords = [];
         this.currentSteps = 0;
+        this.isWon = false;
 
         let y = 0;
 
@@ -69,8 +74,10 @@ module.exports = class Sokoban {
         }
 
         for (let i = 0; i < this.targetCoords.length; i++)
-            if (!["B", "C"].includes(this.layout[this.targetCoords[i][1], this.targetCoords[i][0]]))
+            if (!["B", "C"].includes(this.layout[this.targetCoords[i][1]][this.targetCoords[i][0]])) {
+                this.layout[this.targetCoords[i][1]][this.targetCoords[i][0]] = "X"
                 this.grid.attach((new Gtk.Image({ file: "./sprites/target.png" })), this.targetCoords[i][0], this.targetCoords[i][1], 1, 1);
+            }
 
         this.gridBox.packStart(this.grid, true, false, 2);
         win.showAll();
@@ -93,13 +100,17 @@ module.exports = class Sokoban {
             this.layout[charY][charX] = " ";
             this.layout[charY - 1][charX] = "C";
 
+            this.isWon = this.targetCoords.reduce((prev, curr) => {
+                return prev && this.layout[curr[1]][curr[0]] == "B";
+            }, true);
+
+            this.playSound(true);
+
             this.clear();
             this.render();
-        }
+        } else this.playSound(false);
 
-        return this.targetCoords.reduce((prev, curr) => {
-            return prev && this.layout[curr[1]][curr[0]] == "B";
-        }, true)
+
     }
 
     moveDown() {
@@ -114,13 +125,16 @@ module.exports = class Sokoban {
             this.layout[charY][charX] = " ";
             this.layout[charY + 1][charX] = "C";
 
+            this.isWon = this.targetCoords.reduce((prev, curr) => {
+                return prev && this.layout[curr[1]][curr[0]] == "B";
+            }, true)
+
+            this.playSound(true);
+
             this.clear();
             this.render();
-        }
+        } else this.playSound(false);
 
-        return this.targetCoords.reduce((prev, curr) => {
-            return prev && this.layout[curr[1]][curr[0]] == "B";
-        }, true)
     }
 
     moveLeft() {
@@ -135,13 +149,16 @@ module.exports = class Sokoban {
             this.layout[charY][charX] = " ";
             this.layout[charY][charX - 1] = "C";
 
+            this.isWon = this.targetCoords.reduce((prev, curr) => {
+                return prev && this.layout[curr[1]][curr[0]] == "B";
+            }, true)
+
+            this.playSound(true);
+
             this.clear();
             this.render();
-        }
+        } else this.playSound(false);
 
-        return this.targetCoords.reduce((prev, curr) => {
-            return prev && this.layout[curr[1]][curr[0]] == "B";
-        }, true)
     }
 
     moveRight() {
@@ -156,13 +173,15 @@ module.exports = class Sokoban {
             this.layout[charY][charX] = " ";
             this.layout[charY][charX + 1] = "C";
 
+            this.isWon = this.targetCoords.reduce((prev, curr) => {
+                return prev && this.layout[curr[1]][curr[0]] == "B";
+            }, true);
+
+            this.playSound(true);
+
             this.clear();
             this.render();
-        }
-
-        return this.targetCoords.reduce((prev, curr) => {
-            return prev && this.layout[curr[1]][curr[0]] == "B";
-        }, true)
+        } else this.playSound(false);
     }
 
     moveIsAllowed(x, y, direction) {
@@ -176,6 +195,7 @@ module.exports = class Sokoban {
         switch (direction) {
             case "UP":
                 if (!["W", "B"].includes(this.layout[y - 1][x])) {
+                    this.boxReachedTarget = this.layout[y - 1][x] == "X";
                     this.layout[y][x] = x == " ";
                     this.layout[y - 1][x] = "B";
                     return true;
@@ -183,6 +203,7 @@ module.exports = class Sokoban {
                 else return false;
             case "DOWN":
                 if (!["W", "B"].includes(this.layout[y + 1][x])) {
+                    this.boxReachedTarget = this.layout[y + 1][x] == "X";
                     this.layout[y][x] = " ";
                     this.layout[y + 1][x] = "B";
                     return true;
@@ -190,6 +211,7 @@ module.exports = class Sokoban {
                 else return false;
             case "LEFT":
                 if (!["W", "B"].includes(this.layout[y][x - 1])) {
+                    this.boxReachedTarget = this.layout[y][x - 1] == "X";
                     this.layout[y][x] = " ";
                     this.layout[y][x - 1] = "B";
                     return true;
@@ -197,6 +219,7 @@ module.exports = class Sokoban {
                 else return false;
             case "RIGHT":
                 if (!["W", "B"].includes(this.layout[y][x + 1])) {
+                    this.boxReachedTarget = this.layout[y][x + 1] == "X";
                     this.layout[y][x] = " ";
                     this.layout[y][x + 1] = "B";
                     return true;
@@ -206,6 +229,14 @@ module.exports = class Sokoban {
                 return false;
         }
 
+    }
+
+    playSound(moved) {
+        if(this.isWon) sfx.nextLevel();
+        else if(this.boxReachedTarget) sfx.targetReached();
+        else moved ? sfx.step() : sfx.wallHit();
+
+        this.boxReachedTarget = false;
     }
 
 }
